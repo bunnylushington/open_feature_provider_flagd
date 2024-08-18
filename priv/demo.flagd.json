@@ -1,0 +1,61 @@
+{
+    "$schema": "https://flagd.dev/schema/v0/flags.json",
+    "flags": {
+        "boolean": {
+            "state": "ENABLED",
+            "variants": {
+                "on": true,
+                "off": false
+            },
+            "defaultVariant": "off"
+        },
+
+        "bool-target": {
+            "state": "ENABLED",
+            "variants": {
+                "on": true,
+                "off": false
+            },
+            "defaultVariant": "off",
+            "targeting": {
+                "if":
+                [{"===": [{"var": "company"}, "example.com"]}, "on"]
+            }
+        },
+
+        "string": {
+            "state": "ENABLED",
+            "variants": {
+                "red": "#FF0000",
+                "blue": "#0000FF",
+                "green": "#00FF00",
+                "yellow": "#FFFF00"
+            },
+            "defaultVariant": "green"
+        },
+        "float": {
+            "state": "ENABLED",
+            "variants": {
+                "one": 1.1,
+                "two": 2.2
+            },
+            "defaultVariant": "one"
+        },
+        "integer": {
+            "state": "ENABLED",
+            "variants": {
+                "one": 1,
+                "two": 2
+            },
+            "defaultVariant": "one"
+        },
+        "map": {
+            "state": "ENABLED",
+            "variants": {
+                "a": {"a": 1, "b": 2},
+                "b": {"a": 10, "b": 20}
+            },
+            "defaultVariant": "b"
+        }
+    }
+}
