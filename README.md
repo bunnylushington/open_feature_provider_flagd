@@ -5,7 +5,7 @@ Use `flagd` as an OpenFeature provider.
 ## Example Use
 
 ``` elixir
-provider = Flagd.new("http://localhost:8013")
+provider = OpenFeature.Provider.Flagd.new("http://localhost:8013")
 OpenFeature.set_provider(provider)
 client = OpenFeature.get_client()
 
