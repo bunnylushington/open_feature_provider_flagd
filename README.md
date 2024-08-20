@@ -25,19 +25,18 @@ port 8013.  Running `docker-compose -f docker-compose.yaml up` in the
 base of this repository will set up a flagd server with the sample
 configuration `priv/demo.flagd.json`.
 
-## Installation
+## Building
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed by adding `open_feature_provider_flagd` to your
-list of dependencies in `mix.exs`:
+To create the `flagd.pb.ex` asset:
 
-```elixir
-def deps do
-  [
-    {:open_feature_provider_flagd, "~> 0.1.0"}
-  ]
-end
+``` shell
+$ brew install protobuf
+$ mix escript.install hex protobug
+$ wget https://buf.build/open-feature/flagd/raw/main/-/schema/v1/schema.proto \
+    -Osrc/flagd.proto
+$ protoc --elixir_out=plugins=grpc:./lib --elixir_opt=package_prefix=flagd \
+    -I src flagd.proto
+
 ```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at <https://hexdocs.pm/open_feature_provider_flagd>.
+```

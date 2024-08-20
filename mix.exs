@@ -24,7 +24,10 @@ defmodule OpenFeatureProviderFlagd.MixProject do
       {:ex_doc, "~> 0.27", only: [:dev, :test], runtime: false},
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:open_feature, "~> 0.1"},
-      {:req, "~> 0.5"}
+      {:req, "~> 0.5"},
+      {:grpc, "~> 0.9.0"},
+      {:google_protos, "~> 0.4.0"},
+      {:protobuf_generate, "~> 0.1.1", only: [:dev], runtime: false}
     ]
   end
 end

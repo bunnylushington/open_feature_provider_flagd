@@ -1,4 +1,4 @@
-defmodule OpenFeature.Provider.Flagd do
+defmodule OpenFeature.Provider.Flagd.HTTP do
   @moduledoc """
   Open Feature flagd provider.
   """

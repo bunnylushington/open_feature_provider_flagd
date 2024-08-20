@@ -2,7 +2,7 @@ defmodule OpenFeature.Provider.FlagdTest do
   use ExUnit.Case
 
   alias OpenFeature.Client
-  alias OpenFeature.Provider.Flagd
+  alias OpenFeature.Provider.Flagd.HTTP, as: Flagd
 
   @endpoint "http://localhost:8013"
 
