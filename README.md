@@ -5,7 +5,13 @@ Use `flagd` as an OpenFeature provider.
 ## Example Use
 
 ``` elixir
-provider = OpenFeature.Provider.Flagd.new("http://localhost:8013")
+## an HTTP provider
+provider = OpenFeature.Provider.Flagd.HTTP.new("http://localhost:8013")
+
+## a gRPC provider
+provider = OpenFeature.Provider.Flagd.GRPC.new("localhost:8013")
+
+## both the HTTP and gRPC providers use the same API:
 OpenFeature.set_provider(provider)
 client = OpenFeature.get_client()
 
@@ -15,7 +21,6 @@ OpenFeature.Client.get_boolean_value(client, "key", true)
 ## with a context
 OpenFeature.Client.get_boolean_value(client, "key", true,
     context: %{company: "example.com"})
-
 ```
 
 ## Testing
