@@ -1,10 +1,10 @@
-defmodule OpenFeature.Provider.Flagd.HTTPTest do
+defmodule OpenFeature.Provider.Flagd.GRPCTest do
   use ExUnit.Case
 
   alias OpenFeature.Client
-  alias OpenFeature.Provider.Flagd.HTTP, as: Flagd
+  alias OpenFeature.Provider.Flagd.GRPC, as: Flagd
 
-  @endpoint "http://localhost:8013"
+  @endpoint "localhost:8013"
 
   setup do
     provider = Flagd.new(@endpoint)

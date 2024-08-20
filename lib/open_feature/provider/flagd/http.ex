@@ -17,7 +17,7 @@ defmodule OpenFeature.Provider.Flagd.HTTP do
             hooks: [],
             req: nil
 
-  @typedoc "A representation of the flagd provider."
+  @typedoc "A representation of the HTTP flagd provider."
   @type t() :: %__MODULE__{
           name: String.t,
           domain: String.t | nil,
@@ -42,8 +42,8 @@ defmodule OpenFeature.Provider.Flagd.HTTP do
   end
 
   @impl true
-  @spec initialize(OpenFeature.Provider.Flagd.t, any, any)
-        ::  {:ok, OpenFeature.Provider.Flagd.t}
+  @spec initialize(t, any, any)
+        ::  {:ok, t}
   def initialize(provider, domain, _context) do
     req = Req.new(base_url: base_url(provider),
                   method: :post,
@@ -58,7 +58,7 @@ defmodule OpenFeature.Provider.Flagd.HTTP do
 
   @impl true
   @spec resolve_boolean_value(
-          provider :: OpenFeature.Provider.Flagd.t,
+          provider :: t,
           key :: String.t,
           default :: boolean,
           contect :: any()) :: OpenFeature.Provider.result
@@ -68,30 +68,30 @@ defmodule OpenFeature.Provider.Flagd.HTTP do
 
   @impl true
   @spec resolve_map_value(
-          provider :: OpenFeature.Provider.Flagd.t,
+          provider :: t,
           key :: String.t,
           default :: map,
-          contect :: any()) :: OpenFeature.Provider.result
+          context :: any()) :: OpenFeature.Provider.result
   def resolve_map_value(provider, key, _default, context) do
     request(provider, key, context, "/ResolveObject")
   end
 
   @impl true
   @spec resolve_number_value(
-          provider :: OpenFeature.Provider.Flagd.t,
+          provider :: t,
           key :: String.t,
           default :: number,
-          contect :: any()) :: OpenFeature.Provider.result
+          context :: any()) :: OpenFeature.Provider.result
   def resolve_number_value(provider, key, _default, context) do
     request(provider, key, context, "/ResolveFloat")
   end
 
   @impl true
   @spec resolve_string_value(
-          provider :: OpenFeature.Provider.Flagd.t,
+          provider :: t,
           key :: String.t,
           default :: String.t,
-          contect :: any()) :: OpenFeature.Provider.result
+          context :: any()) :: OpenFeature.Provider.result
   def resolve_string_value(provider, key, _default, context) do
     request(provider, key, context, "/ResolveString")
   end
