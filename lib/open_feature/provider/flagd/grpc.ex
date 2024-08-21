@@ -3,6 +3,9 @@ defmodule OpenFeature.Provider.Flagd.GRPC do
   gRPC interface to flagd
   """
 
+  require Logger
+
+  alias OpenFeature.EventEmitter
   alias OpenFeature.ResolutionDetails
   alias Flagd.Schema.V1, as: FlagRPC
 
@@ -21,11 +24,12 @@ defmodule OpenFeature.Provider.Flagd.GRPC do
           domain: String.t | nil,
           endpoint: String.t,
           channel: GRPC.Channel.t | nil,
-          state: :not_ready | :ready,
+          state: atom,
           hooks: list}
 
-  @spec new(String.t) :: OpenFeature.Provider.Flagd.GRPC.t()
-  def new(endpoint) do
+  @spec new(String.t) :: t()
+  @spec new(String.t, keyword) :: t()
+  def new(endpoint, _opts \\ []) do
     %__MODULE__{endpoint: endpoint}
   end
 
@@ -115,6 +119,46 @@ defmodule OpenFeature.Provider.Flagd.GRPC do
     Enum.map(context, fn {k, v} -> {to_string(k), v} end)
     |> Enum.into(%{})
     |> Protobuf.JSON.Decode.from_json_data(Google.Protobuf.Struct)
+  end
+
+  def start_event_stream(client) do
+    channel = client.provider.channel
+    request = %FlagRPC.EventStreamRequest{}
+    {:ok, stream} = FlagRPC.Service.Stub.event_stream(channel, request)
+    process_event_stream(stream, client.domain)
+  end
+
+  defp process_event_stream(stream, domain) do
+    stream
+    |> Stream.take(1)
+    |> Enum.to_list()
+    |> hd()
+    |> process_event_message(domain)
+    process_event_stream(stream, domain)
+  end
+
+  defp process_event_message({:ok, msg}, domain) do
+    case Protobuf.JSON.Encode.encodable(msg, nil) do
+      %{"type" => "keep_alive"} -> :ok
+
+      %{"type" => "provider_ready"} ->
+        EventEmitter.emit(domain, :provider_ready, %{})
+
+      %{"type" => "configuration_change"} = data ->
+        Enum.each(data["data"]["flags"], fn {flag, attrs} ->
+          change = %{type: attrs["type"],
+                     source: attrs["source"],
+                     flag_key: flag}
+          EventEmitter.emit(domain, :configuration_change, change)
+        end)
+
+      %{"type" => type} = data ->
+        Logger.debug("unknown event #{type} #{inspect(data)}")
+    end
+  end
+
+  defp process_event_message({:error, err}, _domain) do
+    Logger.warning("error from flagd event: #{err}")
   end
 
 end

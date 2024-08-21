@@ -21,7 +21,18 @@ OpenFeature.Client.get_boolean_value(client, "key", true)
 ## with a context
 OpenFeature.Client.get_boolean_value(client, "key", true,
     context: %{company: "example.com"})
+
+## the gRPC client can listen to events:
+OpenFeature.Provider.Flagd.GRPC.start_event_stream(client)
+
+## perhaps log configuration changes:
+OpenFeature.Client.add_event_handler(client, :configuration_change,
+                         fn details ->
+                           Logger.debug(inspect(details))
+                         end)
 ```
+
+There are two events emitted: `:provider_ready` and `:configuration_change`.
 
 ## Testing
 
