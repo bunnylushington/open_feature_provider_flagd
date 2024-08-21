@@ -26,6 +26,7 @@ OpenFeature.Client.get_boolean_value(client, "key", true,
 OpenFeature.Provider.Flagd.GRPC.start_event_stream(client)
 
 ## perhaps log configuration changes:
+require Logger
 OpenFeature.Client.add_event_handler(client, :configuration_change,
                          fn details ->
                            Logger.debug(inspect(details))
