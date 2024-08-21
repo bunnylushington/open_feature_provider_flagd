@@ -35,6 +35,33 @@ OpenFeature.Client.add_event_handler(client, :configuration_change,
 
 There are two events emitted: `:provider_ready` and `:configuration_change`.
 
+flagd differentiates between floats and integers.  Given
+
+``` json
+        "myNumber": {
+            "state": "ENABLED",
+            "variants": {
+                "one": 1,
+                "two": 2
+            },
+            "defaultVariant": "one"
+        },
+```
+
+we will expect:
+
+``` elixir
+OpenFeature.Client.get_number_value(grpc_client, "myNumber", 10) === 1
+OpenFeature.Client.get_number_value(grpc_client, "myNumber", 10.0) === 1.0
+
+## but note this curiosity:
+OpenFeature.Client.get_number_value(http_client, "myNumber", 10) === "1"
+OpenFeature.Client.get_number_value(http_client, "myNumber", 10.0) === 1
+
+```
+
+
+
 ## Testing
 
 Tests require a live `flagd` and expect to communicate via http to
@@ -53,7 +80,5 @@ $ wget https://buf.build/open-feature/flagd/raw/main/-/schema/v1/schema.proto \
     -Osrc/flagd.proto
 $ protoc --elixir_out=plugins=grpc:./lib --elixir_opt=package_prefix=flagd \
     -I src flagd.proto
-
-```
 
 ```

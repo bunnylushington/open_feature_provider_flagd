@@ -82,8 +82,11 @@ defmodule OpenFeature.Provider.Flagd.HTTP do
           key :: String.t,
           default :: number,
           context :: any()) :: OpenFeature.Provider.result
-  def resolve_number_value(provider, key, _default, context) do
-    request(provider, key, context, "/ResolveFloat")
+  def resolve_number_value(provider, key, default, context) do
+    method = if is_integer(default),
+                do: "/ResolveInt",
+                else: "/ResolveFloat"
+    request(provider, key, context, method)
   end
 
   @impl true

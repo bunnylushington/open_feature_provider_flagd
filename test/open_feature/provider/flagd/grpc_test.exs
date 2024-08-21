@@ -38,15 +38,17 @@ defmodule OpenFeature.Provider.Flagd.GRPCTest do
   end
 
   test "resolve number value, integer", %{client: c} do
-    assert Client.get_number_value(c, "integer", 10) == 1
+    assert Client.get_number_value(c, "integer", 10) === 1
     detail = Client.get_number_details(c, "integer", 10)
     refute detail.error_code
+    assert Client.get_number_value(c, "integer", 10.0) === 1.0
   end
 
   test "resolve number value, float", %{client: c} do
-    assert Client.get_number_value(c, "float", 1.1)
+    assert Client.get_number_value(c, "float", 1.1) === 1.1
     detail = Client.get_number_details(c, "float", 1.1)
     refute detail.error_code
+    assert Client.get_number_value(c, "float", 3) === 1
   end
 
   test "resolve number value, does not exist", %{client: c} do

@@ -1,4 +1,4 @@
-alias OpenFeature.Provider.Flagd.GRPC, as: Flagd
-provider = Flagd.new("localhost:8013")
+alias OpenFeature.Provider.Flagd.HTTP, as: Flagd
+provider = Flagd.new("http://localhost:8013")
 OpenFeature.set_provider(provider)
 client = OpenFeature.get_client()

@@ -38,7 +38,7 @@ defmodule OpenFeature.Provider.Flagd.HTTPTest do
   end
 
   test "resolve number value, integer", %{client: c} do
-    assert Client.get_number_value(c, "integer", 10) == 1
+    assert Client.get_number_value(c, "integer", 10) == "1"
     detail = Client.get_number_details(c, "integer", 10)
     refute detail.error_code
   end

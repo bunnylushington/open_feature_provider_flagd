@@ -77,11 +77,14 @@ defmodule OpenFeature.Provider.Flagd.GRPC do
       key :: String.t,
       default :: number,
       context :: any()) :: OpenFeature.Provider.result
-  def resolve_number_value(provider, key, _default, context) do
+  def resolve_number_value(provider, key, default, context) do
+    {method, type} =
+      if is_integer(default),
+         do:   {:resolve_int,   FlagRPC.ResolveIntRequest},
+         else: {:resolve_float, FlagRPC.ResolveFloatRequest}
     ctx = encode_context(context)
-    request = struct(FlagRPC.ResolveFloatRequest,
-                     %{flag_key: key, context: ctx})
-    resolve(:resolve_float, provider.channel, request)
+    request = struct(type, %{flag_key: key, context: ctx})
+    resolve(method, provider.channel, request)
   end
 
   @impl true
