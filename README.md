@@ -38,7 +38,16 @@ There are two events emitted: `:provider_ready` and `:configuration_change`.
 flagd differentiates between floats and integers.  Given
 
 ``` json
-        "myNumber": {
+        "myFloat": {
+            "state": "ENABLED",
+            "variants": {
+                "one": 1.1,
+                "two": 2.2
+            },
+            "defaultVariant": "one"
+        },
+
+        "myInteger": {
             "state": "ENABLED",
             "variants": {
                 "one": 1,
@@ -51,12 +60,18 @@ flagd differentiates between floats and integers.  Given
 we will expect:
 
 ``` elixir
-OpenFeature.Client.get_number_value(grpc_client, "myNumber", 10) === 1
-OpenFeature.Client.get_number_value(grpc_client, "myNumber", 10.0) === 1.0
+OpenFeature.Client.get_number_value(grpc_client, "myInteger", 10) === 1
+OpenFeature.Client.get_number_value(grpc_client, "myInteger", 10.0) === 1.0
+
+OpenFeature.Client.get_number_value(grpc_client, "myFloat", 10) === 1
+OpenFeature.Client.get_number_value(grpc_client, "myFloat", 10.0) === 1.1
 
 ## but note this curiosity:
-OpenFeature.Client.get_number_value(http_client, "myNumber", 10) === "1"
-OpenFeature.Client.get_number_value(http_client, "myNumber", 10.0) === 1
+OpenFeature.Client.get_number_value(http_client, "myInteger", 10) === "1"
+OpenFeature.Client.get_number_value(http_client, "myInteger", 10.0) === 1
+
+OpenFeature.Client.get_number_value(http_client, "myFloat", 10) === "1"
+OpenFeature.Client.get_number_value(http_client, "myFloat", 10.0) === 1.1
 
 ```
 
